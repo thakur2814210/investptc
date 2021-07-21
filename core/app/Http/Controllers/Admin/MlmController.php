@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\GeneralSetting;
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
+use App\Models\Referral;
 use Illuminate\Http\Request;
 
 class MlmController extends Controller
@@ -13,12 +14,14 @@ class MlmController extends Controller
     {
         $page_title = 'MLM Plans';
         $empty_message = 'No Plan found';
-        $plans = Plan::latest()->paginate(getPaginate());;
-        return view('admin.plan.index', compact('page_title', 'plans', 'empty_message'));
+        $plans = Plan::latest()->paginate(getPaginate());
+        $refs = Referral::get();
+        return view('admin.plan.index', compact('page_title', 'plans', 'empty_message','refs'));
     }
 
     public function planStore(Request $request)
     {
+        return 1;
         $this->validate($request, [
             'name'              => 'required',
             'price'             => 'required|min:0',
