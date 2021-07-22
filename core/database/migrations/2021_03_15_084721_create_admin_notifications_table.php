@@ -13,13 +13,13 @@ class CreateAdminNotificationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('admin_notifications', function (Blueprint $table) {
-            $table->id();
-            $table->integer('user_id')->default(0);
-            $table->string('title',100)->nullable();
-            $table->tinyInteger('read_status')->default(0);
-            $table->text('click_url')->nullable();
-            $table->timestamps();
+        Schema::table('admin_notifications', function (Blueprint $table) {
+            // $table->id();
+            // $table->integer('user_id')->default(0);
+            // $table->string('title',100)->nullable();
+            // $table->tinyInteger('read_status')->default(0);
+            // $table->text('click_url')->nullable();
+            // $table->timestamps();
         });
     }
 

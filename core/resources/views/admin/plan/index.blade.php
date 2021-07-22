@@ -14,7 +14,7 @@
                                 <th scope="col">@lang('Name')</th>
                                 <th scope="col">@lang('Price')</th>
                                 <th scope="col">@lang('Business Volume (BV)')</th>
-                                <th scope="col">@lang('Referral Commission')</th>
+                                <th scope="col">@lang('Referral Commission Level')</th>
                                 <th scope="col">@lang('Tree Commission')</th>
                                 <th scope="col">@lang('Daily Ad Limit')</th>
                                 <th scope="col">@lang('Status')</th>
@@ -22,13 +22,14 @@
                             </tr>
                             </thead>
                             <tbody>
+                                
                             @forelse($plans as $key => $plan)
                                 <tr>
                                     <td data-label="@lang('Sl')">{{$key+1}}</td>
                                     <td data-label="@lang('Name')">{{ __($plan->name) }}</td>
                                     <td data-label="@lang('Price')">{{$general->cur_sym}}{{ getAmount($plan->price) }}</td>
                                     <td data-label="@lang('Bv')">{{ $plan->bv }}</td>
-                                    <td data-label="@lang('Referral Commission')">{{$general->cur_sym}}{{ getAmount($plan->ref_com) }}</td>
+                                    <td data-label="@lang('Referral Commission')">{{ getAmount($plan->ref_level) }}</td>
 
                                     <td data-label="@lang('Tree Commission')">
                                         {{$general->cur_sym}}{{ getAmount($plan->tree_com) }}
@@ -56,7 +57,7 @@
                                                 data-status="{{ $plan->status }}"
                                                 data-bv="{{ $plan->bv }}"
                                                 data-price="{{ getAmount($plan->price) }}"
-                                                data-ref_com="{{ getAmount($plan->ref_com) }}"
+                                                data-ref_level="{{ getAmount($plan->ref_level) }}"
                                                 data-tree_com="{{ getAmount($plan->tree_com) }}"
                                                 data-daily_ad_limit="{{ $plan->daily_ad_limit }}"
                                                 data-original-title="Edit">
@@ -126,7 +127,7 @@
                             <div class="input-group">
                                 <div class="input-group-prepend"><span
                                     class="input-group-text">{{$general->cur_sym}} </span></div>
-                                    <input type="text" class="form-control  ref_com" name="ref_com"
+                                    <input type="text" class="form-control  ref_level" name="ref_level"
                                     required>
                                     <small class="text--red">@lang('If a user who subscribed to this plan, refers someone and if the referred user buys a plan, then he will get this amount.')</small>
                             </div>
@@ -259,7 +260,7 @@
                 modal.find('.name').val($(this).data('name'));
                 modal.find('.price').val($(this).data('price'));
                 modal.find('.bv').val($(this).data('bv'));
-                modal.find('.ref_com').val($(this).data('ref_com'));
+                modal.find('.ref_level').val($(this).data('ref_level'));
                 modal.find('.tree_com').val($(this).data('tree_com'));
                 modal.find('input[name=daily_ad_limit]').val($(this).data('daily_ad_limit'));
 

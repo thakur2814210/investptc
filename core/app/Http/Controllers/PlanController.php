@@ -24,6 +24,7 @@ class PlanController extends Controller
     {
         $data['page_title'] = "Plans";
         $data['plans'] = Plan::whereStatus(1)->orderBy('price')->get();
+        
         return view($this->activeTemplate . '.user.plan', $data);
 
     }

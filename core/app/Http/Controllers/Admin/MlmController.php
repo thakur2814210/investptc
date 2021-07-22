@@ -15,28 +15,29 @@ class MlmController extends Controller
         $page_title = 'MLM Plans';
         $empty_message = 'No Plan found';
         $plans = Plan::latest()->paginate(getPaginate());
+        
         $refs = Referral::get();
         return view('admin.plan.index', compact('page_title', 'plans', 'empty_message','refs'));
     }
 
     public function planStore(Request $request)
     {
-        return 1;
+        
         $this->validate($request, [
             'name'              => 'required',
             'price'             => 'required|min:0',
             'bv'                => 'required|min:0|integer',
-            'ref_com'           => 'required|min:0',
+            'ref_level'           => 'required|min:0',
             'tree_com'          => 'required|min:0',
             'daily_ad_limit'    => 'required|integer',
         ]);
-
 
         $plan = new Plan();
         $plan->name             = $request->name;
         $plan->price            = $request->price;
         $plan->bv               = $request->bv;
         $plan->ref_com          = $request->ref_com;
+        $plan->ref_level          = $request->ref_level;
         $plan->tree_com         = $request->tree_com;
         $plan->status           = $request->status?1:0;
         $plan->daily_ad_limit   = $request->daily_ad_limit;
