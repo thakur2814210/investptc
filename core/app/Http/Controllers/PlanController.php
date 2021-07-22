@@ -24,7 +24,6 @@ class PlanController extends Controller
     {
         $data['page_title'] = "Plans";
         $data['plans'] = Plan::whereStatus(1)->orderBy('price')->get();
-        
         return view($this->activeTemplate . '.user.plan', $data);
 
     }
@@ -101,63 +100,104 @@ public function business()
     
     function planStore(Request $request)
     {
-
-        $this->validate($request, ['plan_id' => 'required|integer']);
-        $plan = Plan::find($request->plan_id);
-
-        $gnl = GeneralSetting::first();
-
-        if ($plan) {
-            $user = User::find(Auth::id());
-
-            if ($user->balance >= $plan->price) {
-                $oldPlan = $user->plan_id;
-
-                $user->plan_id = $plan->id;
-                $user->balance -= $plan->price;
-                $user->total_invest += $plan->price;
-                $user->dpl  = $plan->daily_ad_limit;
-                $user->save();
-
-                $trx = $user->transactions()->create([
-                    'amount' => $plan->price,
-                    'trx_type' => '-',
-                    'details' => 'Purchased ' . $plan->name,
-                    'remark' => 'purchased_plan',
-                    'trx' => getTrx(),
-                    'post_balance' => getAmount($user->balance),
-                ]);
-
-                notify($user, 'plan_purchased', [
-                    'plan' => $plan->name,
-                    'amount' => getAmount($plan->price),
-                    'currency' => $gnl->cur_text,
-                    'trx' => $trx->trx,
-                    'post_balance' => getAmount($user->balance) . ' ' . $gnl->cur_text,
-                ]);
-
-                if ($oldPlan == 0) {
-                    updatePaidCount($user->id);
-                }
-
-                $details = Auth::user()->username . ' Subscribed to ' . $plan->name . ' plan.';
-
-                updateBV($user->id, $plan->bv, $details);
-
-                if ($plan->tree_com > 0) {
-                    treeComission($user->id, $plan->tree_com, $details);
-                }
-
-                referralComission($user->id, $details);
-
-                $notify[] = ['success', 'Purchased ' . $plan->name . ' Successfully'];
-                return redirect()->route('user.home')->withNotify($notify);
-            }
-            $notify[] = ['error', 'You do not have enough balance to buy this plan. Increase your balance through our deposit system'];
-            return redirect()->route('user.deposit')->withNotify($notify);
+        $request->validate([
+            'plan_id'=>'required'
+        ]);
+        $plan = Plan::findOrFail($request->plan_id);
+        $user = auth()->user();
+        if($plan->id == $user->plan_id){
+            $notify[] = ['error',"Opps! you can't buy your current plan"];
+            return back()->withNotify($notify);
         }
-        $notify[] = ['error', 'Something Went Wrong!'];
+        if($plan->price > $user->balance){
+            $notify[] = ['error','Opps! your balance is not sufficient'];
+            return back()->withNotify($notify);
+        }
+        $user->balance -= $plan->price;
+        $user->dpl = $plan->daily_limit;
+        $user->plan_id = $plan->id;
+        $user->save();
+        $trx = getTrx();
+        Transaction::create([
+            'user_id'=>$user->id,
+            'amount'=>$plan->price,
+            'charge'=>0,
+            'trx_type'=>'-',
+            'details'=>'Subscribed to '.$plan->name.' Plan',
+            'remark'=>'buy_plan',
+            'trx'=>$trx,
+            'post_balance'=>$user->balance
+        ]);
+        $gnl = GeneralSetting::first();
+        if ($gnl->ref_upgr == 1) {
+                 levelCommision($user->id, $plan->price, $commissionType = 'Subscription Comission');
+         }
+        notify($user, 'BUY_PLAN', [
+            'plan_name' => $plan->name,
+            'amount' => getAmount($plan->price),
+            'currency' => $gnl->cur_text,
+            'trx' => $trx,
+            'post_balance' => $user->balance +0
+        ]);
+        $notify[] = ['success','You have subscribed to the plan successfully'];
         return back()->withNotify($notify);
+   
+        // $this->validate($request, ['plan_id' => 'required|integer']);
+        // $plan = Plan::find($request->plan_id);
+
+        // $gnl = GeneralSetting::first();
+
+        // if ($plan) {
+        //     $user = User::find(Auth::id());
+
+        //     if ($user->balance >= $plan->price) {
+        //         $oldPlan = $user->plan_id;
+
+        //         $user->plan_id = $plan->id;
+        //         $user->balance -= $plan->price;
+        //         $user->total_invest += $plan->price;
+        //         $user->dpl  = $plan->daily_ad_limit;
+        //         $user->save();
+
+        //         $trx = $user->transactions()->create([
+        //             'amount' => $plan->price,
+        //             'trx_type' => '-',
+        //             'details' => 'Purchased ' . $plan->name,
+        //             'remark' => 'purchased_plan',
+        //             'trx' => getTrx(),
+        //             'post_balance' => getAmount($user->balance),
+        //         ]);
+
+        //         notify($user, 'plan_purchased', [
+        //             'plan' => $plan->name,
+        //             'amount' => getAmount($plan->price),
+        //             'currency' => $gnl->cur_text,
+        //             'trx' => $trx->trx,
+        //             'post_balance' => getAmount($user->balance) . ' ' . $gnl->cur_text,
+        //         ]);
+
+        //         if ($oldPlan == 0) {
+        //             updatePaidCount($user->id);
+        //         }
+
+        //         $details = Auth::user()->username . ' Subscribed to ' . $plan->name . ' plan.';
+
+        //         updateBV($user->id, $plan->bv, $details);
+
+        //         if ($plan->tree_com > 0) {
+        //             treeComission($user->id, $plan->tree_com, $details);
+        //         }
+
+        //         referralComission($user->id, $details);
+
+        //         $notify[] = ['success', 'Purchased ' . $plan->name . ' Successfully'];
+        //         return redirect()->route('user.home')->withNotify($notify);
+        //     }
+        //     $notify[] = ['error', 'You do not have enough balance to buy this plan. Increase your balance through our deposit system'];
+        //     return redirect()->route('user.deposit')->withNotify($notify);
+        // }
+        // $notify[] = ['error', 'Something Went Wrong!'];
+        // return back()->withNotify($notify);
     }
 
 

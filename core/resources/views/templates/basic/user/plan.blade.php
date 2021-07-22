@@ -3,9 +3,7 @@
 @section('panel')
 
     <div class="row mb-none-30">
-        
         @foreach($plans as $data)
-
             <div class="col-xl-4 col-md-6 mb-50">
                 <div class="card">
                     <div class="card-body pt-5 pb-5 ">
@@ -19,7 +17,7 @@
                                     <span class="icon" data-toggle="modal" data-target="#bvInfoModal"><i
                                             class="fas fa-question-circle"></i></span></li>
                                 <li>
-                                    <i class="fas fa-check bg--success"></i> <span> @lang('Referral Commission'): {{$general->cur_sym}} {{getAmount($data->ref_com)}} </span>
+                                    <i class="fas fa-check bg--success"></i> <span> @lang('Referral Commission Level'):  {{getAmount($data->ref_level)}} </span>
                                     <span class="icon" data-toggle="modal" data-target="#refComInfoModal"><i
                                     class="fas fa-question-circle"></i></span>
                                 </li>

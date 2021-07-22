@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CommissionLog;
 use App\Models\Transaction;
 use App\Models\Withdrawal;
 use App\Models\WithdrawMethod;
@@ -55,17 +56,21 @@ class UserReportController extends Controller
     public function binaryCom(Request $request)
     {
 
-        $search = $request->search;
-        if ($search) {
-            $data['page_title'] = "Binary Commissions search : " . $search;
-            $data['transactions'] = auth()->user()->transactions()->where('remark', 'binary_commission')->where('trx', 'like', "%$search%")->latest()->paginate(getPaginate());
-        } else {
-            $data['page_title'] = 'Binary Commissions';
-            $data['transactions'] = auth()->user()->transactions()->where('remark', 'binary_commission')->latest()->paginate(getPaginate());
-        }
-        $data['search'] = $search;
+        // $search = $request->search;
+        // if ($search) {
+        //     $data['page_title'] = "Binary Commissions search : " . $search;
+        //     $data['transactions'] = auth()->user()->transactions()->where('remark', 'binary_commission')->where('trx', 'like', "%$search%")->latest()->paginate(getPaginate());
+        // } else {
+        //     $data['page_title'] = 'Binary Commissions';
+        //     $data['transactions'] = auth()->user()->transactions()->where('remark', 'binary_commission')->latest()->paginate(getPaginate());
+        // }
+        // $data['search'] = $search;
 
-        $data['empty_message'] = 'No data found.';
+        // $data['empty_message'] = 'No data found.';
+        
+        $commissionlogs = CommissionLog::all();
+        $data['page_title'] = "Binary Commissions search : ";
+        $data['commissionlogs'] =  $commissionlogs = CommissionLog::all();
         return view($this->activeTemplate . 'user.transactions', $data);
 
     }

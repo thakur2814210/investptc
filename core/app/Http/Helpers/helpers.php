@@ -1,12 +1,15 @@
 <?php
 
 use App\Models\BvLog;
+use App\Models\CommissionLog;
 use App\Models\EmailTemplate;
 use App\Models\Extension;
 use App\Models\Frontend;
 use App\Models\GeneralSetting;
 use App\Models\Plan;
+use App\Models\Referral;
 use App\Models\SmsTemplate;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserExtra;
 use PHPMailer\PHPMailer\Exception;
@@ -1025,6 +1028,74 @@ function referralComission($user_id, $details)
     }
 
 
+}
+
+function levelCommision($id, $amount, $commissionType = ''){
+    $usr = $id;
+    $i = 1;
+    $fuser = User::find($usr);
+    
+    if ($fuser->plan->ref_level == 0) {
+        return 0;
+    }
+    $gnl = GeneralSetting::first();
+    if ($fuser->plan_id == 0) {
+        return 0;
+    }
+    $level = $fuser->plan->ref_level;
+    while($usr!="" || $usr!="0" || $i<$level ) {
+       
+        $me = User::find($usr);
+        $refer= User::find($me->ref_id);
+            if($refer == "") {
+                break;
+            }
+            $comission = Referral::where('level',$i)->first();
+            if($comission == null) {
+                break;
+            }
+            $com = ($amount * $comission->percent)/100;
+            $referWallet = User::where('id',$refer->id)->first();
+            $new_bal = getAmount($referWallet->balance + $com);
+            $referWallet->balance = $new_bal;
+            $referWallet->save();
+            $trx = getTrx();
+            Transaction::create([
+                'user_id'=>$refer->id,
+                'amount'=>getAmount($com),
+                'charge'=>0,
+                'trx_type'=>'+',
+                'details'=>'Level '.$i.' Referral Commission from '.$me->username,
+                'trx'=>$trx,
+                'post_balance'=>$new_bal
+            ]);
+            CommissionLog::create([
+                'user_id' => $refer->id,
+                'who' => $id,
+                'level' => 'Level '.$i.' Referral Commission',
+                'amount' => getAmount($com),
+                'main_amo' => $new_bal,
+                'title' => $commissionType,
+                'trx' => $trx,
+            ]);
+            // send_email($refer, 'REFERRAL_COMMISSION', [
+            //     'amount' =>  getAmount($com),
+            //     'main_balance' => $new_bal,
+            //     'trx' => $trx,
+            //     'level' => $i.' level Referral Commission',
+            //     'currency' =>$gnl->cur_text
+            // ]);
+            // send_sms($refer, 'REFERRAL_COMMISSION', [
+            //     'amount' =>  getAmount($com),
+            //     'main_balance' => $new_bal,
+            //     'trx' => $trx,
+            //     'level' => $i.' level Referral Commission',
+            //     'currency' =>$gnl->cur_text
+            // ]);
+            $usr = $refer->id;
+            $i++;
+    }
+    return 0;
 }
 
 /*
