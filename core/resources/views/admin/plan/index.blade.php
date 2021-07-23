@@ -122,17 +122,16 @@
                             <small class="text--red">@lang('When someone buys this plan, all of his ancestors will get this value which will be used for a matching bonus.')</small>
                         </div>
 
-                        <div class="form-group">
-                            <label class="font-weight-bold">@lang('Referral Commission')</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend"><span
-                                    class="input-group-text">{{$general->cur_sym}} </span></div>
-                                    <input type="text" class="form-control  ref_level" name="ref_level"
-                                    required>
-                                    <small class="text--red">@lang('If a user who subscribed to this plan, refers someone and if the referred user buys a plan, then he will get this amount.')</small>
-                            </div>
-                        </div>
+                       <div class="form-group">
+                        <label for="details"><strong>@lang('Referral Commission level') :</strong> </label>
+                        <select name="ref_level" class="form-control" required>
+                            <option value="0"> @lang('NO Referral Commission')</option>
+                            @foreach($refs as $v)
+                            <option value="{{$v->level}}"> @lang('Up to') {{$v->level}}  @lang('Level')</option>
+                            @endforeach
+                        </select>
 
+                    </div>
 
                         <div class="form-group">
                             <label class="font-weight-bold">@lang('Tree Commission')</label>
@@ -200,7 +199,7 @@
                             <small class="text--red">@lang('If a user who subscribed to this plan, refers someone and if the referred user buys a plan, then he will get this amount.')</small>
                         </div>
                         <div class="form-group">
-                        <label for="details"><strong>@lang('Referral Commission') :</strong> </label>
+                        <label for="details"><strong>@lang('Referral Commission level') :</strong> </label>
                         <select name="ref_level" class="form-control" required>
                             <option value="0"> @lang('NO Referral Commission')</option>
                             @foreach($refs as $v)
