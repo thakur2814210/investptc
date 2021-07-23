@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CommissionLog;
 use App\Models\Ptc;
 use App\Models\PtcView;
 use App\Models\Transaction;
@@ -9,6 +10,7 @@ use App\Models\Trx;
 use App\Models\GeneralSetting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
 class PtcController extends Controller
@@ -146,6 +148,22 @@ class PtcController extends Controller
 
         $empty_message = "No Click Found";
         return view(activeTemplate().'user.ptc.clicks',compact('viewads','page_title','empty_message'));
+    }
+
+    public function levels(){
+        $page_title = "PTC Levels";
+        $ptclevels = CommissionLog::where('who', '=', Auth::user()->id)->where('title', '=', 'Ads View Commssion')->get()->sort()->reverse()->paginate(getPaginate());
+        
+        // $viewads = $ptc->groupBy('vdt')->map(function ($item,$key) {
+        //     $data['clicks'] = collect($item)->count();
+        //     $data['amount'] = collect($item)->sum('amount');
+        //     $data['date'] = $key;
+        //     return $data;
+        // })->sort()->reverse()->paginate(getPaginate());
+
+
+        $empty_message = "No Click Found";
+        return view(activeTemplate().'user.ptc.levels',compact('ptclevels','page_title','empty_message'));
     }
 
 }

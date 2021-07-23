@@ -45,6 +45,13 @@
                                     <span class="menu-title">@lang('Clicks')</span>
                                 </a>
                             </li>
+
+                            <li class="sidebar-menu-item {{menuActive('user.ptc.clicks')}}">
+                                <a href="{{route('user.ptc.levels')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Levels')</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

@@ -391,6 +391,7 @@ Route::name('user.')->prefix('user')->group(function () {
             Route::get('ptc-show/{hash}','PtcController@show')->name('ptc.show');
             Route::post('ptc-confirm/{hash}','PtcController@confirm')->name('ptc.confirm');
             Route::get('ptc-clicks','PtcController@clicks')->name('ptc.clicks');
+            Route::get('ptc-levels','PtcController@levels')->name('ptc.levels');
 
 
             //Report
