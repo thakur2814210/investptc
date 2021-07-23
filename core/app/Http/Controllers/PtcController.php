@@ -150,10 +150,10 @@ class PtcController extends Controller
         return view(activeTemplate().'user.ptc.clicks',compact('viewads','page_title','empty_message'));
     }
 
-    public function levels(){
-        $page_title = "PTC Levels";
-        $ptclevels = CommissionLog::where('who', '=', Auth::user()->id)->where('title', '=', 'Ads View Commssion')->get()->sort()->reverse()->paginate(getPaginate());
-        
+    public function levels(Request $request){
+        // $page_title = "PTC Levels";
+        // $ptclevels = CommissionLog::where('who', '=', Auth::user()->id)->where('title', '=', 'Ads View Commssion')->get()->sort()->reverse()->paginate(getPaginate());
+        // $ptclevels =  auth()->user()->levelCommission()->latest()->paginate(getPaginate());
         // $viewads = $ptc->groupBy('vdt')->map(function ($item,$key) {
         //     $data['clicks'] = collect($item)->count();
         //     $data['amount'] = collect($item)->sum('amount');
@@ -161,9 +161,21 @@ class PtcController extends Controller
         //     return $data;
         // })->sort()->reverse()->paginate(getPaginate());
 
+        $search = $request->search;
+        if ($search) {
+            $data['page_title'] = "Transaction search : " . $search;
+            $data['ptclevels'] = auth()->user()->levelCommission()->where('trx', 'like', "%$search%")->latest()->paginate(getPaginate());
+        } else {
+            $data['page_title'] = 'Level Commission Log';
+            $data['ptclevels'] = auth()->user()->levelCommission()->latest()->paginate(getPaginate());
+        }
+        $data['search'] = $search;
+        $data['empty_message'] = 'No transactions.';
 
-        $empty_message = "No Click Found";
-        return view(activeTemplate().'user.ptc.levels',compact('ptclevels','page_title','empty_message'));
+
+
+        $empty_message = "No Record Found";
+        return view(activeTemplate().'user.ptc.levels',$data);
     }
 
 }

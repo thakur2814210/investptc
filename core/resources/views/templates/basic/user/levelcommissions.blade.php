@@ -2,6 +2,7 @@
 
 @section('panel')
     <div class="row">
+
         <div class="col-lg-12">
             <div class="card b-radius--10 ">
                 <div class="card-body p-0">
@@ -9,25 +10,24 @@
                         <table class="table table--light style--two">
                             <thead>
                             <tr>
-                                {{-- <th scope="col">@lang('SL')</th> --}}
+                                <th scope="col">@lang('SL')</th>
                                 <th scope="col">@lang('Date')</th>
                                 <th scope="col">@lang('TRX')</th>
                                 <th scope="col">@lang('Amount')</th>
                                 <th scope="col">@lang('Level')</th>
-                                <th scope="col">@lang('Detail')</th>
+                                {{-- <th scope="col">@lang('Detail')</th> --}}
                             </tr>
                             </thead>
                             <tbody>
-                            @forelse($ptclevels as $data)
+                            @forelse($transactions  as $trx)
                                 <tr>
-                                    {{-- <td data-label="@lang('SL')">{{ $data->firstItem()+$loop->index }}</td> --}}
-                                    <td data-label="@lang('Date')">{{ showDateTime($data->created_at) }}</td>
-                                    <td data-label="@lang('TRX')" class="font-weight-bold">{{ $data->trx }}</td>
+                                    <td data-label="@lang('SL')">{{ $transactions->firstItem()+$loop->index }}</td>
+                                    <td data-label="@lang('Date')">{{ showDateTime($trx->created_at) }}</td>
+                                    <td data-label="@lang('TRX')" class="font-weight-bold">{{ $trx->trx }}</td>
                                     <td data-label="@lang('Amount')" class="budget">
-                                        <strong class="text-success"> + {{getAmount($data->amount)}} {{$general->cur_text}}</strong>
+                                        <strong class="text-success"> + {{getAmount($trx->amount)}} {{$general->cur_text}}</strong>
                                     </td>
-                                    <td data-label="@lang('Detail')">{{ __($data->level) }}</td>
-                                    <td data-label="@lang('Detail')">{{ __($data->title) }}</td>
+                                    <td data-label="@lang('Detail')">{{ __($trx->level) }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="card-footer py-4">
-                    {{ $ptclevels->appends($_GET)->links() }}
+                    {{ $transactions->appends($_GET)->links() }}
                 </div>
             </div>
         </div>

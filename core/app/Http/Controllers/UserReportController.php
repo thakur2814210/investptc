@@ -93,7 +93,7 @@ class UserReportController extends Controller
 
     public function transactions(Request $request)
     {
-
+        // return Auth::user()->levelCommission()->latest()->paginate(getPaginate());
         $search = $request->search;
         if ($search) {
             $data['page_title'] = "Transaction search : " . $search;
@@ -104,8 +104,23 @@ class UserReportController extends Controller
         }
         $data['search'] = $search;
         $data['empty_message'] = 'No transactions.';
+        $data['page_title'] = "Transaction search : ";
         return view($this->activeTemplate . 'user.transactions', $data);
 
+    }
+
+    public function levelCommission(Request $request){
+        $search = $request->search;
+        if ($search) {
+            $data['page_title'] = "Transaction search : " . $search;
+            $data['transactions'] = auth()->user()->levelCommission()->where('trx', 'like', "%$search%")->latest()->paginate(getPaginate());
+        } else {
+            $data['page_title'] = 'Level Commission Log';
+            $data['transactions'] = auth()->user()->levelCommission()->latest()->paginate(getPaginate());
+        }
+        $data['search'] = $search;
+        $data['empty_message'] = 'No transactions.';
+        return view($this->activeTemplate. 'user.levelcommissions', $data);
     }
 
     public function depositHistory(Request $request)

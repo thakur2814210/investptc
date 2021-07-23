@@ -138,12 +138,12 @@
                                     <span class="menu-title">@lang('Referral Commissions')</span>
                                 </a>
                             </li>
-                            <li class="sidebar-menu-item {{menuActive('user.report.binaryCom')}}">
+                            {{-- <li class="sidebar-menu-item {{menuActive('user.report.binaryCom')}}">
                                 <a href="{{route('user.report.binaryCom')}}" class="nav-link">
                                     <i class="menu-icon las la-dot-circle"></i>
                                     <span class="menu-title">@lang('Level Commission')</span>
                                 </a>
-                            </li>
+                            </li> --}}
 
                         </ul>
                     </div>

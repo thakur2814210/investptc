@@ -401,6 +401,7 @@ Route::name('user.')->prefix('user')->group(function () {
             Route::get('report/withdraw/log', 'UserReportController@withdrawLog')->name('report.withdraw');
             Route::get('report/referral/commission', 'UserReportController@refCom')->name('report.refCom');
             Route::get('report/binary/commission', 'UserReportController@binaryCom')->name('report.binaryCom');
+            Route::get('report/level/commission', 'UserReportController@levelCommission')->name('report.levelCom');
 
 
 

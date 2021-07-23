@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
 
     protected $data = [
-        'data'=>1
+        'data' => 1
     ];
 
 
@@ -49,19 +49,24 @@ class User extends Authenticatable
         return $this->hasMany(UserLogin::class);
     }
 
+    public function levelCommission()
+    {
+        return $this->hasMany(CommissionLog::class , 'who' , 'id')->where("title", 'Ads View Commssion');
+    }
+
     public function transactions()
     {
-        return $this->hasMany(Transaction::class)->orderBy('id','desc');
+        return $this->hasMany(Transaction::class)->orderBy('id', 'desc');
     }
 
     public function deposits()
     {
-        return $this->hasMany(Deposit::class)->where('status','!=',0);
+        return $this->hasMany(Deposit::class)->where('status', '!=', 0);
     }
 
     public function withdrawals()
     {
-        return $this->hasMany(Withdrawal::class)->where('status','!=',0);
+        return $this->hasMany(Withdrawal::class)->where('status', '!=', 0);
     }
 
     //mlm
@@ -116,5 +121,4 @@ class User extends Authenticatable
     {
         return $this->where('sv', 1);
     }
-
 }
