@@ -19,7 +19,7 @@
                                     <span class="icon" data-toggle="modal" data-target="#bvInfoModal"><i
                                             class="fas fa-question-circle"></i></span></li>
                                 <li>
-                                    <i class="fas fa-check bg--success"></i> <span> @lang('Referral Commission'): {{$general->cur_sym}} {{getAmount($data->ref_com)}} </span>
+                                    <i class="fas fa-check bg--success"></i> <span> @lang('Referral Commission Level'):  {{getAmount($data->ref_level)}} </span>
                                     <span class="icon" data-toggle="modal" data-target="#refComInfoModal"><i
                                     class="fas fa-question-circle"></i></span>
                                 </li>
